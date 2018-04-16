@@ -2,75 +2,52 @@ console.log('App.js is running!');
 
 const app = {
   title: 'Indecision App',
-  subtitle: 'This is some info',
-  options: ['One', 'Two']
+  subtitle: 'Have your decisions made for you.',
+  options: []
 };
 
-// JSX - JavaScript XML
-const template = (
-  <div>
-    <h1>{app.title}</h1>
-    {app.subtitle && <p>{app.subtitle}</p>}
-    <ol>
-      <li>Item one</li>
-      <li>Item two</li>
-    </ol>
-    <p>{app.options.length > 0 ? 'Here are your options:' : 'No options'}</p>
-  </div>
-);
+const onFormSubmit = (e) => {
+  e.preventDefault();
 
-const user = {
-  name: 'George Richards',
-  age: 24,
-  location: 'Nottingham'
-};
-const getLocation = (location) => {
-  if (location) {
-    return <p>Location: {location}</p>;
+  const option = e.target.elements.option.value;
+  // target - targets the element the event started on (form)
+  // elements - on (form) we have access to all the elements, indexed by name
+  // picking name=option which is the input, value gives text submitted
+
+  if (option) {
+    app.options.push(option);
+    e.target.elements.option.value = '';
+
+    renderApp();
   }
-  // return undefined;
 };
-const userName = 'George Richards';
-const userAge = 24;
-const userLocation = 'Nottingham';
-const templateTwo = (
-  <div>
-    <h1>{user.name ? user.name : 'Anonymous'}</h1>
-    {(user.age && user.age >= 18) && <p>Age: {userAge}</p>}
-    {getLocation(user.location)}
-  </div>
-);
 
-let count = 0;
-const addOne = () => {
-  count++;
-  // console.log('addOne', count);
-  renderCounterApp();
-};
-const minusOne = () => {
-  count--;
-  // console.log('minusOne');
-  renderCounterApp();
-};
-const reset = () => {
-  count = 0;
-  // console.log('reset');
-  renderCounterApp();
+const clearOptions = (e) => {
+  app.options = [];
+  renderApp();
 };
 
 const appRoot = document.getElementById('app');
-
-const renderCounterApp = () => {
-  const templateThree = (
+const renderApp = () => {
+  const template = (
     <div>
-      <h1>Count: {count}</h1>
-      <button onClick={addOne}>+1</button>
-      <button onClick={minusOne}>-1</button>
-      <button onClick={reset}>reset</button>
+      <h1>{app.title}</h1>
+      {app.subtitle && <p>{app.subtitle}</p>}
+      <p>{app.options.length > 0 ? 'Here are your options:' : 'No options'}</p>
+      <p>{app.options.length}</p>
+      <button onClick={clearOptions}>Remove All</button>
+      <ol>
+        <li>Item one</li>
+        <li>Item two</li>
+      </ol>
+      <form onSubmit={onFormSubmit}>
+        <input type="text" name="option"/>
+        <button>Add Option</button>
+      </form>
     </div>
   );
 
-  ReactDOM.render(templateThree, appRoot);
+  ReactDOM.render(template, appRoot);
 };
 
-renderCounterApp();
+renderApp();
